@@ -82,7 +82,7 @@ const ReservationForm = ({ packageName, departureDate, packagePrice }) => {
       validationErrors.passportExpiryDate = "Tanggal kedaluwarsa paspor wajib diisi";
     }
     if (!/^\d{10,15}$/.test(inputData.contactNumber)) {
-      validationErrors.contactNumber = "Nomor kontak harus terdiri dari 10 hingga 15 digit";
+      validationErrors.contactNumber = "Nomor kontak harus berupa angka dan terdiri dari 10 hingga 15 digit";
     }
     
     setError(validationErrors);
