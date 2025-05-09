@@ -15,6 +15,7 @@ const ReservationForm = ({ packageName, departureDate, packagePrice }) => {
   const [passportExpiryDate, setPassportExpiryDate] = useState(null);
   //  State untuk menangani error
   const [error, setError] = useState({});
+  const priceNumber = parseInt(packagePrice.replace(/[^\d]/g, ""), 10);
   
   const { user } = useAuth();
   const navigate = useNavigate();
@@ -51,7 +52,7 @@ const ReservationForm = ({ packageName, departureDate, packagePrice }) => {
     const { name, value } = e.target;
     setInputData((prevData) => ({
       ...prevData,
-      [name]: value,
+      [name]: name === 'passportNumber' ? value.toUpperCase() : value,
     }));
   }
   
@@ -98,7 +99,7 @@ const ReservationForm = ({ packageName, departureDate, packagePrice }) => {
       packageId,
       packageName,
       departureDate,
-      packagePrice,
+      packagePrice: priceNumber,
       dateOfBirth: dateOfBirth ? dayjs(dateOfBirth).format("YYYY-MM-DD") : null,
       passportExpiryDate: passportExpiryDate ? dayjs(passportExpiryDate).format("YYYY-MM-DD") : null,
     };
@@ -289,7 +290,6 @@ const ReservationForm = ({ packageName, departureDate, packagePrice }) => {
             name="contactNumber"
             label="Nomor Kontak (WhatsApp)"
             type="tel"
-            placeholder="628123456789"
             value={inputData.contactNumber}
             onChange={handleChange}
             error={!!error.contactNumber}
