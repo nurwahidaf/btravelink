@@ -37,7 +37,7 @@ const PackageList = () => {
   }
 
   return (
-    <Box mt={4} mb={4} mx='auto' sx={{ width: '100%', px: 4 }}>
+    <Box mt={4} mb={4} mx='auto' sx={{ width: { xs: '100%', md: '90%'}, px: 4 }}>
       <Grid container spacing={2} sx={{ display: 'flex', justifyContent: 'center' }}>
         {packages.map(pkg => (
           <Grid key={pkg.id} size={{ xs: 12, sm: 4, md: 3, lg: 2 }}>

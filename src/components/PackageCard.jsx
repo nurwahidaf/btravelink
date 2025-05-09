@@ -16,26 +16,26 @@ const PackageCard = ({ data }) => {
             boxShadow: 1
           }}
         >
-          <CardMedia
-            component="img"
-            image={imageUrl}
-            title={packageName}
-            alt={packageName}
-            sx={{
-              objectFit: 'cover',
-              width: '100%',
-              height: { xs: 150, sm: 175, md: 200, lg: 'auto' },
-            }}
-          />
           <Link to={`/packages/${data.id}`}>
+            <CardMedia
+              component="img"
+              image={imageUrl}
+              title={packageName}
+              alt={packageName}
+              sx={{
+                objectFit: 'cover',
+                width: '100%',
+                height: { xs: 150, sm: 175, md: 200, lg: 'auto' },
+              }}
+            />
             <CardContent sx={{ textAlign: 'left' }}>
               <Typography gutterBottom variant="h5" component="div" sx={{ fontSize:'1rem', fontWeight: 'bold' }}>
                 {packageName}
               </Typography>
-              <Typography variant="body2" color="text.dark" mb={1} sx={{ fontStyle: 'italic'}}>
+              <Typography variant="body2" sx={{ mb: 1, fontStyle: 'italic' }}>
                 {packageType}
               </Typography>
-              <Typography variant="h5" color="cta" mt={1} sx={{ fontSize:'1rem', fontWeight: 'bold' }}>
+              <Typography variant="h5" color="accent.highlight" mt={1} sx={{ fontSize:'1rem', fontWeight: 'bold' }}>
                 Rp{price?.toLocaleString('id-ID')}
               </Typography>
             </CardContent>

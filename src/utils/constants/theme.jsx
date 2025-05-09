@@ -15,12 +15,13 @@ const theme = createTheme({
       default: "#F9F9F9",
     },
     text: {
-      dark: "#333",
+      dark: "#333333",
       light: "#F7F7F8",
     },
     accent: {
       main: '#F4D35E',
       highlight: '#FF7518',
+      dark: "#333333",
     }
   },
 });

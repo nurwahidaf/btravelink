@@ -14,7 +14,7 @@ const Footer = () => {
           &copy; {new Date().getFullYear()} PT Panna Erbe Naraya. All rights reserved.
         </Typography>
         <Typography variant="body2" color="textSecondary" align="center">
-          Follow us on:
+          Ikuti kami di media sosial <br />
           <Link href='https://web.facebook.com/people/BTraveLink/100063771301487/?_rdc=1&_rdr#' color="inherit"> Facebook</Link> | 
           <Link href='https://www.tiktok.com/@btravelink' color="inherit"> TikTok</Link> | 
           <Link href='https://www.instagram.com/btravelink/#' color="inherit"> Instagram</Link>

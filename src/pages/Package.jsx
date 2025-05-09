@@ -52,7 +52,7 @@ const Package = () => {
   return (
     <>
       <PackageDetail detail={detail} schedules={schedules} />
-      <Recommendations title="Rekomendasi Paket Perjalanan Lainnya" />
+      <Recommendations title="Rekomendasi Paket Perjalanan Lainnya" excludeId={packageId} />
     </>
   );
 };

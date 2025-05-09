@@ -1,7 +1,20 @@
 import { Box, Button, Container, Typography } from "@mui/material";
 import HeroImage from './../assets/images/heroImage.jpg';
+import { useAuth } from "../hooks/useAuth";
+import { useNavigate } from "react-router-dom";
 
 const Hero = () => {
+  const { user } = useAuth();
+  const navigate = useNavigate();
+
+  const handleClickHero = () => {
+    if (user) {
+      navigate('/packages');
+    } else {
+      navigate('/auth');
+    }
+  };
+
   return (
     <>
       <Box
@@ -24,7 +37,7 @@ const Hero = () => {
             fontWeight='bold'
             color='text.light'
             mb={2}
-            sx={{ fontSize: { xs: '2rem', sm: '3rem', md: '4rem' } }}
+            sx={{ fontSize: { xs: '2.5rem', sm: '3rem', md: '4rem' } }}
           >
             bTravelink
           </Typography>
@@ -32,18 +45,20 @@ const Hero = () => {
             variant="h6"
             mb={4}
             color='text.light'
-            sx={{ fontSize: { xs: '1rem', sm: '1.25rem', md: '1.5rem' } }}
+            sx={{ fontSize: { xs: '1rem', sm: '1.25rem', md: '1.25rem' } }}
           >
-            Enjoy the moment with us!
+            Enjoy the moment with us! <br/>
+            Temukan pengalaman perjalanan yang tak terlupakan dengan bTravelink. 
+            Bergabunglah dengan kami untuk menjelajahi keindahan dunia.
           </Typography>
           <Button
             variant="contained"
             color="secondary"
             size="medium"
             sx={{ borderRadius: '30px' }}
-            href='/packages'
+            onClick={handleClickHero}
           >
-            Lihat Paket Perjalanan
+            Mulai Perjalananmu
           </Button>
         </Container>
       </Box>

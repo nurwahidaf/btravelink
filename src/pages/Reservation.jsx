@@ -1,7 +1,16 @@
+import { useLocation } from "react-router-dom";
+import ReservationForm from "../components/ReservationForm";
+
 const Reservation = () => {
+  const location = useLocation();
+  const { packageName, departureDate, packagePrice } = location.state || {};
   return (
     <>
-      <h1>Reservation</h1>
+      <ReservationForm 
+        packageName={packageName}
+        departureDate={departureDate}
+        packagePrice={packagePrice}
+      />
     </>
   );
 }

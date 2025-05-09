@@ -1,27 +1,40 @@
 import { Box, Button, Grid, Stack, Typography } from '@mui/material';
 import { useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
-
+import BackButton from './BackButton';
 
 const PackageDetail = ({ detail, schedules }) => {
   const [selected, setSelected] = useState(null);
   const navigate = useNavigate();
   const { packageId } = useParams();
-  const handleClick = () => {
-    navigate(`/packages/${packageId}/reservation`);
+  
+  const handleReservationClick = () => {
+    navigate(`/packages/${packageId}/reservation`, {
+      state: {
+        packageId: packageId,
+        packageName: detail.packageName,
+        departureDate: schedules.find((schedule) => schedule.id === selected)?.departure.toDate().toLocaleDateString("id-ID", {
+          day: "numeric",
+          month: "long",
+          year: "numeric"
+        }),
+        packagePrice: detail.price?.toLocaleString('id-ID'),
+      }
+    });
   };
 
   return (
     <Box sx={{ width: {xs: '100%', sm: '90%'}, mx: 'auto' }}>
-      <Grid container rowSpacing={1} columnSpacing={{ xs: 1, sm: 2, md: 3 }} sx={{ px: 4, pt: 6 }}>
-        <Grid size={{xs: 12, sm: 5}}>
-          <img src={detail.imageUrl} alt="Package" style={{ width: '100%', borderRadius: '15px' }} />
+      <BackButton />
+      <Grid container rowSpacing={1} columnSpacing={{ xs: 1, sm: 2, md: 3 }} sx={{ px: 4, pt: 2 }}>
+        <Grid size={{xs: 12, md: 6 }} sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
+          <img src={detail.imageUrl} alt="Package" style={{ width: '80%', borderRadius: '15px' }} />
         </Grid>
-        <Grid size={{xs: 12, sm: 7}}>
+        <Grid size={{xs: 12, md: 6}}>
           <Typography variant="h4" sx={{ fontWeight: 'bold', mb: 2 }}>
             {detail.packageName}
           </Typography>
-          <Typography variant="body1" sx={{ mb: 2 }}>
+          <Typography variant="body1" sx={{ mb: 2, fontStyle: 'italic' }}>
             {detail.packageType}, {detail.tourCategory}, {detail.regionCategory}
           </Typography>
           <Typography variant="body1" sx={{ mb: 2 }}>
@@ -39,8 +52,11 @@ const PackageDetail = ({ detail, schedules }) => {
           </Typography>
           <Stack spacing={2}>
             <Typography variant="body1">Pilih Jadwal Keberangkatan:</Typography>
-            <Stack direction="row" spacing={2} flexWrap="wrap">
-              {schedules.map((item) => (
+            <Grid container spacing={2}>
+              {schedules
+                .slice()
+                .sort((a, b) => a.departure.toDate() - b.departure.toDate())
+                .map((item) => (
                 <Button
                   key={item.id}
                   variant={selected === item.id ? "contained" : "outlined"}
@@ -55,14 +71,14 @@ const PackageDetail = ({ detail, schedules }) => {
                   })}
                 </Button>
               ))}
-            </Stack>
+            </Grid>
 
             {selected && (
               <Button
                 variant="contained"
                 color="secondary"
                 sx={{ borderRadius: 8 }}
-                onClick={handleClick}
+                onClick={handleReservationClick}
               >
                 Lanjut ke Reservasi
               </Button>

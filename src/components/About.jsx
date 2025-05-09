@@ -6,7 +6,7 @@ import services from './../utils/constants/services';
 const About = () => {
   return (
     <>
-      <Box component="section" sx={{ textAlign: 'center', p: 6, width: '80%', margin: '0 auto' }}>
+      <Box component="section" sx={{ textAlign: 'center', p: 6, width: {xs: '100%', md: '80%'}, margin: '0 auto' }}>
         <Typography
           variant="body1"
           color="text.secondary"

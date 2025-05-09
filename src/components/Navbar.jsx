@@ -1,4 +1,3 @@
-import * as React from 'react';
 import AppBar from '@mui/material/AppBar';
 import Box from '@mui/material/Box';
 import Toolbar from '@mui/material/Toolbar';
@@ -13,23 +12,39 @@ import Tooltip from '@mui/material/Tooltip';
 import MenuItem from '@mui/material/MenuItem';
 import LogoImage from './../assets/images/logoImage.png';
 import { Link, useNavigate } from 'react-router-dom';
+import { useState } from 'react';
+import { useAuth } from '../hooks/useAuth';
 
-const pages = [
-  { name: 'Tour Packages', path: '/packages' },
-  // { name: 'About Us', path: '/about-us' },
-  { name: 'Reservations', path: '/reservations' },
-  { name: 'Login', path: '/login' },
+const loggedOutPages = [
+  { name: 'Tour Packages', path: '/packages' }
 ];
 
-const settings = ['Profile', 'Logout'];
+const loggedInPages = [
+  { name: 'Tour Packages', path: '/packages' }, 
+  { name: 'Reservation History', path: '/reservations' },
+];
 
 const Navbar = () => {
-  const [anchorElNav, setAnchorElNav] = React.useState(null);
-  const [anchorElUser, setAnchorElUser] = React.useState(null);
+  const [anchorElNav, setAnchorElNav] = useState(null);
+  const [anchorElUser, setAnchorElUser] = useState(null);
+  const { user, logout } = useAuth();
+  const navigate = useNavigate();
 
+  const handleLogout = async () => {
+    try {
+      await logout();
+      navigate('/');
+    } catch (error) {
+      console.error('Error logout: ', error);
+    }
+  };
+  
+  const pages = user ? loggedInPages : loggedOutPages;
+  
   const handleOpenNavMenu = (event) => {
     setAnchorElNav(event.currentTarget);
   };
+
   const handleOpenUserMenu = (event) => {
     setAnchorElUser(event.currentTarget);
   };
@@ -37,58 +52,67 @@ const Navbar = () => {
   const handleCloseNavMenu = () => {
     setAnchorElNav(null);
   };
-
+  
   const handleCloseUserMenu = () => {
     setAnchorElUser(null);
   };
-
-  const navigate = useNavigate();
 
   return (
     <AppBar position="static" color='#F7F7F8' sx={{ boxShadow: '2' }}>
       <Container maxWidth="xl">
         <Toolbar disableGutters>
+          <Box sx={{ display: 'flex', alignItems: 'center' }}>
+            {/* Logo */}
+            <Link to='/'>
+              <Box 
+                component='img'
+                src={LogoImage}
+                alt='Logo bTravelink'
+                sx={{ 
+                  maxWidth: '100%',
+                  height: 'auto',
+                  objectFit: 'contain',
+                  width: '160px',
+                  mr: 2,
+                }}
+              />
+            </Link>
 
-          {/* Logo */}
-          <Link to='/'>
-            <Box 
-              component='img'
-              src={LogoImage}
-              alt='Logo'
-              sx={{ 
-                maxWidth: '100%',
-                height: 'auto',
-                objectFit: 'contain',
-                width: '160px',
-              }}
-            />
-          </Link>
+            {/* Tampilan menu di desktop */}
+            <Box sx={{ display: { xs: 'none', md: 'flex' } }}>
+              {pages.map((page) => (
+                <Button
+                  key={page.name}
+                  onClick={() => {
+                    handleCloseNavMenu();
+                    navigate(page.path);
+                  }}
+                  color='dark'
+                  sx={{ my: 2, fontWeight: 'bold', display: 'block' }}
+                >
+                  {page.name}
+                </Button>
+              ))}
+            </Box>
+          </Box>
 
-          {/* Navigation & Nav Menu */}
-          <Box sx={{ flexGrow: 1, display: { xs: 'flex', md: 'none' }, justifyContent: 'flex-end' }}>
+          <Box sx={{ flexGrow: 1 }} />
+          
+          {/* Tampilan menu di mobile */}
+          <Box sx={{ display: { xs: 'flex', md: 'none' } }}>
             <IconButton
               size="large"
-              aria-label="account of current user"
+              aria-label="menu"
               aria-controls="menu-appbar"
               aria-haspopup="true"
               onClick={handleOpenNavMenu}
               color="inherit"
-              sx={{ justifyContent: 'flex-end' }}
             >
               <MenuIcon />
             </IconButton>
             <Menu
               id="menu-appbar"
               anchorEl={anchorElNav}
-              anchorOrigin={{
-                vertical: 'bottom',
-                horizontal: 'left',
-              }}
-              keepMounted
-              transformOrigin={{
-                vertical: 'top',
-                horizontal: 'left',
-              }}
               open={Boolean(anchorElNav)}
               onClose={handleCloseNavMenu}
               sx={{ display: { xs: 'block', md: 'none' } }}
@@ -101,62 +125,39 @@ const Navbar = () => {
                     navigate(page.path);
                   }}
                 >
-                  <Typography sx={{ textAlign: 'center' }}>{page.name}</Typography>
+                  <Typography textAlign='center'>{page.name}</Typography>
                 </MenuItem>
               ))}
             </Menu>
-          </Box>
-          <Box sx={{ flexGrow: 1, display: { xs: 'none', md: 'flex' }, ml: '2rem' }}>
-            {pages.map((page) => (
-              <Button
-                key={page.name}
-                onClick={() => {
-                  handleCloseNavMenu();
-                  navigate(page.path);
-                }}
-                sx={{ my: 2, color: '#333', fontWeight: 'bold', display: 'block' }}
-              >
-                {page.name}
-              </Button>
-            ))}
           </Box>
 
-          {/* User Settings */}
-          <Box sx={{ flexGrow: 0 }}>
-            <Tooltip title="Open settings">
-              <IconButton
-                onClick={handleOpenUserMenu}
-                sx={{ p: 0 }}
+          {/* User menu */}
+          {user && (
+            <Box sx={{ flexGrow: 0 }}>
+              <Tooltip title="Open Menu">
+                <IconButton onClick={handleOpenUserMenu} sx={{ p: 0 }}>
+                  <Avatar alt={user.displayName || 'User'} src={user.photoURL || undefined} />
+                </IconButton>
+              </Tooltip>
+              <Menu
+                sx={{ mt: '45px' }}
+                id="menu-appbar"
+                anchorEl={anchorElUser}
+                open={Boolean(anchorElUser)}
+                onClose={handleCloseUserMenu}
               >
-                <Avatar alt="Remy Sharp" src="/static/images/avatar/2.jpg" />
-              </IconButton>
-            </Tooltip>
-            <Menu
-              sx={{ mt: '45px' }}
-              id="menu-appbar"
-              anchorEl={anchorElUser}
-              anchorOrigin={{
-                vertical: 'top',
-                horizontal: 'right',
-              }}
-              keepMounted
-              transformOrigin={{
-                vertical: 'top',
-                horizontal: 'right',
-              }}
-              open={Boolean(anchorElUser)}
-              onClose={handleCloseUserMenu}
-            >
-              {settings.map((setting) => (
-                <MenuItem
-                  key={setting}
-                  onClick={handleCloseUserMenu}
-                >
-                  <Typography sx={{ textAlign: 'center' }}>{setting}</Typography>
+                <MenuItem sx={{ pointerEvents: 'none' }}>
+                  <Typography textAlign='center'>Hai, {user.displayName || 'User Name'}! 👋</Typography>
                 </MenuItem>
-              ))}
-            </Menu>
-          </Box>
+                <MenuItem sx={{ pointerEvents: 'none' }}>
+                  <Typography textAlign='center'>{user.email || 'User Email'}</Typography>
+                </MenuItem>
+                <MenuItem onClick={handleLogout}>
+                  <Typography textAlign='center'>Logout</Typography>
+                </MenuItem>
+              </Menu>
+            </Box>
+          )}
         </Toolbar>
       </Container>
     </AppBar>

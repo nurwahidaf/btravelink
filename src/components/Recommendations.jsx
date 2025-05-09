@@ -1,10 +1,10 @@
 import { useEffect, useState } from "react";
 import { collection, getDocs } from "firebase/firestore";
 import { db } from "../firebase/db";
-import { Box, Button, CircularProgress, Grid, Typography } from "@mui/material";
+import { Box, Button, Grid, Typography } from "@mui/material";
 import PackageCard from "./PackageCard";
 
-const Recommendations = ({ title, showButton}) => {
+const Recommendations = ({ title, showButton, excludeId}) => {
   // State untuk menyimpan data rekomendasi
   const [recommendations, setRecommendations] = useState([]);
 
@@ -13,10 +13,15 @@ const Recommendations = ({ title, showButton}) => {
     const fetchRecommendations = async () => {
       try {
         const querySnapshot = await getDocs(collection(db, "tour-packages"));
-        const data = querySnapshot.docs.map((doc) => ({
+        let data = querySnapshot.docs.map((doc) => ({
           id: doc.id,
           ...doc.data(),
         }));
+        // Filter data supaya tidak termasuk package yang sedang ditampilkan
+        if (excludeId) {
+          data = data.filter((pkg) => pkg.id !== excludeId);
+        }
+
         // Acak data rekomendasi
         const shuffledData = data.sort(() => Math.random() - 0.5);
         // Limit ke 4 data
@@ -28,7 +33,7 @@ const Recommendations = ({ title, showButton}) => {
       }
     };
     fetchRecommendations();
-  }, []);  
+  }, [excludeId]);  
 
   return (
     <>
@@ -50,7 +55,7 @@ const Recommendations = ({ title, showButton}) => {
         <Box sx={{ width: '90%', my: 4, mx: 'auto' }}>
           <Grid container spacing={2} sx={{ display: 'flex', justifyContent: 'center' }}>
             {recommendations.map(pkg => (
-              <Grid key={pkg.id} size={{ xs: 12, sm: 4, md: 3, lg: 2 }}>
+              <Grid key={pkg.id} size={{ xs: 12, sm: 6, md: 3, lg: 2 }}>
                 <PackageCard data={pkg} />
               </Grid>
             ))}

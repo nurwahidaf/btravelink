@@ -1,7 +1,9 @@
+import ReservationHistory from "../components/ReservationHistory";
+
 const Reservations = () => {
   return (
     <>
-      <h1>Reservations</h1>
+      <ReservationHistory />
     </>
   );
 }
