@@ -62,6 +62,7 @@ const PackageDetail = ({ detail, schedules }) => {
                   variant={selected === item.id ? "contained" : "outlined"}
                   color="primary"
                   onClick={() => setSelected(item.id)}
+                  disabled={detail.availableSeats === 0}
                   sx={{ borderRadius: 8, minWidth: 100, mb: 1 }}
                 >
                   {item.departure.toDate().toLocaleDateString("id-ID", {
