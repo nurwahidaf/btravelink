@@ -4,6 +4,7 @@ import { useEffect, useState } from "react";
 import { collection, doc, getDoc, getDocs } from "firebase/firestore";
 import { db } from "../firebase/db";
 import { Box, CircularProgress, Typography } from "@mui/material";
+import Recommendations from "../components/Recommendations";
 
 const Package = () => {
   const { packageId } = useParams();
@@ -51,6 +52,7 @@ const Package = () => {
   return (
     <>
       <PackageDetail detail={detail} schedules={schedules} />
+      <Recommendations title="Rekomendasi Paket Perjalanan Lainnya" />
     </>
   );
 };
