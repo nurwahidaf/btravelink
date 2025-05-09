@@ -1,5 +1,4 @@
 import Hero from "../components/Hero";
-import Recommendations from "../components/Recommendations";
 import About from "../components/About";
 
 const Home = () => {
@@ -7,7 +6,6 @@ const Home = () => {
     <>
       <Hero />
       <About />
-      <Recommendations showButton title="Temukan Paket Perjalanan Terbaik Untukmu" />
     </>
   );
 }

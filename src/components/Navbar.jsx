@@ -16,12 +16,12 @@ import { useState } from 'react';
 import { useAuth } from '../hooks/useAuth';
 
 const loggedOutPages = [
-  { name: 'Tour Packages', path: '/packages' }
+  { name: 'Paket Perjalanan', path: '/packages' }
 ];
 
 const loggedInPages = [
-  { name: 'Tour Packages', path: '/packages' }, 
-  { name: 'Reservation History', path: '/reservations' },
+  { name: 'Paket Perjalanan', path: '/packages' }, 
+  { name: 'Riwayat Reservasi', path: '/reservations' },
 ];
 
 const Navbar = () => {

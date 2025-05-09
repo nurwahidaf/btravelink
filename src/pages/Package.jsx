@@ -1,6 +1,5 @@
 import { useParams } from "react-router-dom";
 import PackageDetail from "../components/PackageDetail";
-import Recommendations from "../components/Recommendations";
 import { useEffect, useState } from "react";
 import { collection, doc, getDoc, getDocs } from "firebase/firestore";
 import { db } from "../firebase/db";
@@ -52,7 +51,6 @@ const Package = () => {
   return (
     <>
       <PackageDetail detail={detail} schedules={schedules} />
-      <Recommendations title="Rekomendasi Paket Perjalanan Lainnya" excludeId={packageId} />
     </>
   );
 };
