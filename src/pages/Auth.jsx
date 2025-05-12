@@ -35,7 +35,7 @@ const Auth = () => {
           </Grid>
           <Grid size={{ xs: 12, md: 6 }}>
             <AuthHeader
-              textAuthTitle={`Welcome Traveler, \nEnjoy The Moment with Us!`}
+              textAuthTitle={`Welcome Traveler, \nLet's Traveling and Enjoy The Moment with Us!`}
               textAuthSubtitle='Login to continue your journey'
             />
             <AuthForm />

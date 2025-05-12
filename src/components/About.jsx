@@ -2,6 +2,7 @@ import { Box, Typography } from "@mui/material";
 import InfoCard from "./InfoCard";
 import benefits from './../utils/constants/benefits';
 import services from './../utils/constants/services';
+import payments from "./../utils/constants/payments";
 
 const About = () => {
   return (
@@ -68,6 +69,31 @@ const About = () => {
         >
           {services.map((service, index) => (
             <InfoCard key={index} data={service} />
+          ))}
+        </Box>
+
+        {/* Payments Section */}
+        <Typography
+          variant="h4"
+          sx={{
+            fontWeight: 'bold',
+            mt: 6,
+            mb: 3,
+            fontSize: { xs: '1.5rem', sm: '2rem' },
+          }}
+        >
+          Informasi Pembayaran
+        </Typography>
+        <Box
+          sx={{
+            display: 'flex',
+            justifyContent: 'center',
+            flexWrap: 'wrap',
+            gap: 2
+          }}
+        >
+          {payments.map((payment, index) => (
+            <InfoCard key={index} data={payment} />
           ))}
         </Box>
       </Box>

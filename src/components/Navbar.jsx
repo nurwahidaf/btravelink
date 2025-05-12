@@ -16,10 +16,12 @@ import { useState } from 'react';
 import { useAuth } from '../hooks/useAuth';
 
 const loggedOutPages = [
+  { name: 'Beranda', path: '/' },
   { name: 'Paket Perjalanan', path: '/packages' }
 ];
 
 const loggedInPages = [
+  { name: 'Beranda', path: '/' },
   { name: 'Paket Perjalanan', path: '/packages' }, 
   { name: 'Riwayat Reservasi', path: '/reservations' },
 ];

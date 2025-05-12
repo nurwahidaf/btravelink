@@ -1,7 +1,7 @@
 import { Box, Button, Grid, Stack, Typography } from '@mui/material';
 import { useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
-import BackButton from './BackButton';
+import BackButton from './buttons/BackButton';
 
 const PackageDetail = ({ detail, schedules }) => {
   const [selected, setSelected] = useState(null);

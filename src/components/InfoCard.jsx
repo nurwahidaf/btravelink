@@ -1,7 +1,7 @@
 import { Box, Typography } from "@mui/material";
 
 const InfoCard = ({ data }) => {
-  const { icon, title, description } = data;
+  const { icon, title, description, bank, name, accountNumber } = data;
 
   return (
     <>
@@ -17,7 +17,7 @@ const InfoCard = ({ data }) => {
               mb: 1
             }}
           >
-            {title}
+            {title || bank}
           </Typography>
           <Typography
             variant="body2"
@@ -28,6 +28,28 @@ const InfoCard = ({ data }) => {
           >
             {description}
           </Typography>
+          {name && (
+            <Typography
+              variant="body2"
+              color="text.dark"
+              sx={{
+                fontSize: { xs: '0.9rem', sm: '1rem' }            
+              }}
+            >
+              a.n. {name}
+            </Typography>
+          )}
+          {accountNumber && (
+            <Typography
+              variant="body2"
+              color="text.dark"
+              sx={{
+                fontSize: { xs: '0.9rem', sm: '1rem' }            
+              }}
+            >
+              {accountNumber}
+            </Typography>
+          )}
         </Box>
       </Box>
     </>

@@ -6,7 +6,7 @@ import { useAuth } from './../hooks/useAuth';
 import { useLocation, useNavigate, useParams } from "react-router-dom";
 import SuccessModal from "./modals/SuccessModal";
 import { saveReservation } from "./../firebase/firestore";
-import BackButton from "./BackButton";
+import BackButton from "./buttons/BackButton";
 
 const ReservationForm = ({ packageName, departureDate, packagePrice }) => {
   // State untuk menyimpan tanggal lahir
