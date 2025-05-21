@@ -15,15 +15,9 @@ const payments = [
   },
   {
     icon: <PaymentIcon sx={{ fontSize: 50, color: 'primary.main' }} />,
-    bank: 'BTPN Jenius',
+    bank: 'SMBC Jenius',
     name: 'Eneke Arisanti Endah M',
     accountNumber: '900-115-717-68',
-  },
-  {
-    icon: <PaymentIcon sx={{ fontSize: 50, color: 'primary.main' }} />,
-    bank: 'Mega Syariah',
-    name: 'Eneke Arisanti Endah M',
-    accountNumber: '2011-386-343',
   },
 ];
 

@@ -105,9 +105,9 @@ const ReservationForm = ({ packageName, departureDate, packagePrice }) => {
     };
     
     // Kirim data ke server
+    setIsSubmitting(true);
     await saveReservation(reservationData);
     console.log("Form Data Submitted:", reservationData);
-    setIsSubmitting(true);
 
     // Tampilkan modal sukses
     setTimeout(() => {
@@ -133,6 +133,7 @@ const ReservationForm = ({ packageName, departureDate, packagePrice }) => {
         <BackButton />
         <Box 
           component="form" 
+          onSubmit={handleSubmit}
           sx={{ 
             width: { xs: '90%', sm: '65%', md: '40%' }, 
             mx: 'auto',
@@ -317,7 +318,7 @@ const ReservationForm = ({ packageName, departureDate, packagePrice }) => {
             color="primary"
             fullWidth
             sx={{ mt: 2 }}
-            onClick={handleSubmit}
+            type="submit"
             disabled={isSubmitting}
           >
             {isSubmitting ? "Mengirim..." : "Kirim Reservasi"}

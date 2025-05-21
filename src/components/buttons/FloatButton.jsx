@@ -16,18 +16,18 @@ const FloatButton = () => {
   return (
     <Box>
       <Fab 
-        color="secondary" 
+        color="primary" 
         aria-label="reservations"
         onClick={handleClickReservations}
         sx={{ position: 'fixed', bottom: 16, right: 80, marginRight: 2, marginBottom: 2 }}
         >
-        <HistoryIcon />
+        <HistoryIcon sx={{ color: 'white' }} />
       </Fab>
       <Fab 
-        color="secondary" 
+        color="success" 
         aria-label="contact-whatsapp"
         onClick={handleClickWhatsApp}
-        sx={{ position: 'fixed', bottom: 16, right: 16, marginRight: 2, marginBottom: 2 }}
+        sx={{ position: 'fixed', bottom: 16, right: 16, marginRight: 2, marginBottom: 2, backgroundColor: '#25D366', '&:hover': { backgroundColor: '#128C7E' } }}
       >
         <WhatsAppIcon />
       </Fab>
