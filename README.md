@@ -1,2 +1,2 @@
 # btravelink
-Repositori btravelink untuk Tugas Akhir
+Repositori Sistem Informasi Reservasi Paket Perjalanan PT Panna Erbe Naraya (bTravelink)
