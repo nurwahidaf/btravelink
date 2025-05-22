@@ -1,27 +1,22 @@
-import { Box, Button, FormControl, IconButton, InputAdornment, InputLabel, OutlinedInput, TextField, Typography } from "@mui/material";
-import { DatePicker } from "@mui/x-date-pickers";
-import dayjs from "dayjs";
-import { useEffect, useState } from "react";
+import { useEffect, useState } from 'react';
 import { useAuth } from './../hooks/useAuth';
-import { useLocation, useNavigate, useParams } from "react-router-dom";
-import SuccessModal from "./modals/SuccessModal";
-import { saveReservation } from "./../firebase/firestore";
-import BackButton from "./buttons/BackButton";
+import { useLocation, useNavigate, useParams } from 'react-router-dom';
+import { saveReservation } from './../firebase/firestore';
+import { DatePicker } from '@mui/x-date-pickers';
+import { Box, Button, FormControl, InputAdornment, InputLabel, OutlinedInput, TextField, Typography } from '@mui/material';
+import dayjs from 'dayjs';
+import BackButton from './buttons/BackButton';
+import SuccessModal from './modals/SuccessModal';
 
+// komponen untuk menampilkan form reservasi
 const ReservationForm = ({ packageName, departureDate, packagePrice }) => {
-  // State untuk menyimpan tanggal lahir
-  const [dateOfBirth, setDateOfBirth] = useState(null);
-  // State untuk menyimpan tanggal kadaluarsa paspor
-  const [passportExpiryDate, setPassportExpiryDate] = useState(null);
-  //  State untuk menangani error
-  const [error, setError] = useState({});
-  const priceNumber = parseInt(packagePrice.replace(/[^\d]/g, ""), 10);
-  
-  const { user } = useAuth();
   const navigate = useNavigate();
   const location = useLocation();
-  const { packageId } = useParams();
+  const { packageId } = useParams(); // mengambil packageId dari URL
+  const { user } = useAuth(); // ambil user dari context useAuth
   
+  // jika user belum login, arahkan ke halaman auth
+  // simpan state untuk kembali ke halaman form setelah login
   useEffect(() => {
     if (!user) {
       navigate('/auth', {
@@ -35,19 +30,27 @@ const ReservationForm = ({ packageName, departureDate, packagePrice }) => {
     }
   }, [user, navigate, location.pathname, packageName, departureDate, packagePrice]);
 
-  // Initial input form
-  const initialInputForm = {
-    email: "",
-    fullName: "",
-    identityNumber: "",
-    passportNumber: "",
-    contactNumber: "",
-    additionalNotes: "",
-  }
-  // State untuk menyimpan data yang diinput
-  const [inputData, setInputData] = useState(initialInputForm);
+  const [dateOfBirth, setDateOfBirth] = useState(null); // state untuk menyimpan tanggal lahir
+  const [passportExpiryDate, setPassportExpiryDate] = useState(null); // state untuk menyimpan tanggal kadaluwarsa paspor
+  const priceNumber = parseInt(packagePrice.replace(/[^\d]/g, ''), 10); // mengambil harga paket dari props dan parsing menjadi angka
   
-  // Fungsi untuk menangani perubahan input
+  const [error, setError] = useState({}); // state untuk menangani error
+  const [openSuccessModal, setOpenSuccessModal] = useState(false); // state untuk menangani modal sukses
+  const [isSubmitting, setIsSubmitting] = useState(false); // state untuk menangani status pengiriman
+  
+  // initial input form
+  const initialInputForm = {
+    email: user?.email || '',
+    fullName: '',
+    identityNumber: '',
+    passportNumber: '',
+    contactNumber: '',
+    additionalNotes: '',
+  }
+
+  const [inputData, setInputData] = useState(initialInputForm); // state untuk menyimpan data yang diinput
+  
+  // fungsi untuk menangani perubahan input
   const handleChange = (e) => {
     const { name, value } = e.target;
     setInputData((prevData) => ({
@@ -59,40 +62,40 @@ const ReservationForm = ({ packageName, departureDate, packagePrice }) => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     
-    // Validasi input
+    // validasi input form
     const validationErrors = {};
     if (!inputData.email.trim()) {
-      validationErrors.email = "Email wajib diisi";
+      validationErrors.email = 'Email wajib diisi';
     } else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(inputData.email)) {
-      validationErrors.email = "Format email tidak valid";
+      validationErrors.email = 'Format email tidak valid';
     }
     if (!inputData.fullName.trim()) { 
-      validationErrors.fullName = "Nama lengkap wajib diisi";
+      validationErrors.fullName = 'Nama lengkap wajib diisi';
     }
     if (!/^\d{16}$/.test(inputData.identityNumber)) {
-      validationErrors.identityNumber = "Nomor identitas harus terdiri dari 16 digit";
+      validationErrors.identityNumber = 'Nomor identitas harus terdiri dari 16 digit angka';
     }
     if (!dateOfBirth) {
-      validationErrors.dateOfBirth = "Tanggal lahir wajib diisi";
+      validationErrors.dateOfBirth = 'Tanggal lahir wajib diisi';
     }
     if (!/^[a-zA-Z0-9]{7,12}$/.test(inputData.passportNumber)) {
-      validationErrors.passportNumber = "Nomor paspor harus terdiri dari 7 hingga 12 karakter";
+      validationErrors.passportNumber = 'Nomor paspor harus terdiri dari 7 hingga 12 karakter';
     }
     if (!passportExpiryDate) {
-      validationErrors.passportExpiryDate = "Tanggal kedaluwarsa paspor wajib diisi";
+      validationErrors.passportExpiryDate = 'Tanggal kedaluwarsa paspor wajib diisi';
     }
     if (!/^\d{10,15}$/.test(inputData.contactNumber)) {
-      validationErrors.contactNumber = "Nomor kontak harus berupa angka dan terdiri dari 10 hingga 15 digit";
+      validationErrors.contactNumber = 'Nomor kontak harus berupa angka dan terdiri dari 10 hingga 15 digit';
     }
     
     setError(validationErrors);
     
-    // Menghentikan proses submit jika ada error
+    // menghentikan proses submit jika ada error
     if (Object.keys(validationErrors).length > 0) {
       return;
     }
     
-    // Data yang akan dikirim ke server
+    // data yang akan dikirim ke server
     const reservationData = {
       ...inputData,
       userId: user.uid,
@@ -100,39 +103,33 @@ const ReservationForm = ({ packageName, departureDate, packagePrice }) => {
       packageName,
       departureDate,
       packagePrice: priceNumber,
-      dateOfBirth: dateOfBirth ? dayjs(dateOfBirth).format("YYYY-MM-DD") : null,
-      passportExpiryDate: passportExpiryDate ? dayjs(passportExpiryDate).format("YYYY-MM-DD") : null,
+      dateOfBirth: dateOfBirth ? dayjs(dateOfBirth).format('YYYY-MM-DD') : null,
+      passportExpiryDate: passportExpiryDate ? dayjs(passportExpiryDate).format('YYYY-MM-DD') : null,
     };
     
-    // Kirim data ke server
+    // kirim data ke server
     setIsSubmitting(true);
     await saveReservation(reservationData);
-    console.log("Form Data Submitted:", reservationData);
 
-    // Tampilkan modal sukses
+    // tampilkan modal sukses
     setTimeout(() => {
       setIsSubmitting(false);
       setOpenSuccessModal(true);
     }, 500);
 
-    // Reset form setelah submit
+    // reset form setelah submit
     setInputData(initialInputForm);
     setDateOfBirth(null);
     setPassportExpiryDate(null);
     setError({});
   }
   
-  // State untuk menangani modal
-  const [openSuccessModal, setOpenSuccessModal] = useState(false);
-  // State untuk menangani status pengiriman
-  const [isSubmitting, setIsSubmitting] = useState(false);
-  
   return (
     <>
       <Box sx={{ px: 4 }}>
         <BackButton />
         <Box 
-          component="form" 
+          component='form' 
           onSubmit={handleSubmit}
           sx={{ 
             width: { xs: '90%', sm: '65%', md: '40%' }, 
@@ -141,16 +138,16 @@ const ReservationForm = ({ packageName, departureDate, packagePrice }) => {
             fontWeight: 'bold' 
           }}
         >
-          <Typography variant="h5" gutterBottom sx={{ fontWeight: 'bold' }}>
+          <Typography variant='h5' gutterBottom sx={{ fontWeight: 'bold' }}>
             Formulir Reservasi
           </Typography>
-          <Typography variant="body1" gutterBottom>
+          <Typography variant='body1' gutterBottom>
             Silakan isi detail di bawah ini untuk melakukan reservasi. Kami akan menghubungi Anda melalui WhatsApp untuk konfirmasi.
           </Typography>
           <TextField
-            id="packageName"
-            name="packageName"
-            label="Nama Paket Perjalanan"
+            id='packageName'
+            name='packageName'
+            label='Nama Paket Perjalanan'
             value={packageName}
             slotProps={{
               input: {
@@ -158,13 +155,13 @@ const ReservationForm = ({ packageName, departureDate, packagePrice }) => {
               },
             }}
             fullWidth
-            margin="normal"
-            size="small"
+            margin='normal'
+            size='small'
           />
           <TextField
-            id="departureDate"
-            name="departureDate"
-            label="Tanggal Keberangkatan"
+            id='departureDate'
+            name='departureDate'
+            label='Tanggal Keberangkatan'
             value={departureDate}
             slotProps={{
               input: {
@@ -172,18 +169,18 @@ const ReservationForm = ({ packageName, departureDate, packagePrice }) => {
               },
             }}
             fullWidth
-            margin="normal"
-            size="small"
+            margin='normal'
+            size='small'
           />
-          <FormControl fullWidth margin="normal" size="small">
-            <InputLabel htmlFor="packagePrice">Harga Paket</InputLabel>
+          <FormControl fullWidth margin='normal' size='small'>
+            <InputLabel htmlFor='packagePrice'>Harga Paket</InputLabel>
             <OutlinedInput
-              id="packagePrice"
-              name="packagePrice"
-              label="Harga Paket"
+              id='packagePrice'
+              name='packagePrice'
+              label='Harga Paket'
               value={packagePrice}
               readOnly
-              startAdornment={<InputAdornment position="start">Rp</InputAdornment>}
+              startAdornment={<InputAdornment position='start'>Rp</InputAdornment>}
             />
           </FormControl>
           <TextField
@@ -192,64 +189,64 @@ const ReservationForm = ({ packageName, departureDate, packagePrice }) => {
             label='Email'
             type='email'
             autoComplete='email'
-            value={inputData.email}
             onChange={handleChange}
+            value={inputData.email}
             error={!!error.email}
             helperText={error.email}
-            fullWidth
             required
-            margin="normal"
-            size="small"
+            fullWidth
+            margin='normal'
+            size='small'
           />
           <TextField
             id='fullName'
             name='fullName'
             label='Nama Lengkap (sesuai dengan paspor)'
             type='text'
-            value={inputData.fullName}
             onChange={handleChange}
+            value={inputData.fullName}
             error={!!error.fullName}
             helperText={error.fullName}
-            fullWidth
             required
-            margin="normal"
-            size="small"
+            fullWidth
+            margin='normal'
+            size='small'
           />
           <TextField
             id='identityNumber'
             name='identityNumber'
             label='Nomor Identitas (KTP/NIK)'
-            type='text'
+            type='tel'
             slotProps={{
               input: {
                 maxLength: 16,
               },
             }}
-            value={inputData.identityNumber}
             onChange={handleChange}
+            value={inputData.identityNumber}
             error={!!error.identityNumber}
             helperText={error.identityNumber}
-            fullWidth
             required
-            margin="normal"
-            size="small"
+            fullWidth
+            margin='normal'
+            size='small'
           />
           <DatePicker
-            label="Tanggal Lahir"
-            value={dateOfBirth}
+            label='Tanggal Lahir'
             onChange={(newValue) => setDateOfBirth(newValue)}
+            value={dateOfBirth}
             disableFuture={true}
             slotProps={{
               textField: {
                 id: 'dateOfBirth',
                 name: 'dateOfBirth',
                 variant: 'outlined',
-                fullWidth: true,
-                required: true,
-                margin: 'normal',
-                size: 'small',
+                helperText: error.dateOfBirth,
                 error: !!error.dateOfBirth,
-                helperText: error.dateOfBirth
+                required: true,
+                fullWidth: true,
+                margin: 'normal',
+                size: 'small'
               }
             }}
           />
@@ -258,70 +255,70 @@ const ReservationForm = ({ packageName, departureDate, packagePrice }) => {
             name='passportNumber'
             label='Nomor Paspor'
             type='text'
-            value={inputData.passportNumber}
             onChange={handleChange}
+            value={inputData.passportNumber}
             error={!!error.passportNumber}
             helperText={error.passportNumber}
-            fullWidth
             required
-            margin="normal"
-            size="small"
+            fullWidth
+            margin='normal'
+            size='small'
           />
           <DatePicker
-            label="Tanggal Kadaluarsa Paspor"
-            value={passportExpiryDate}
+            label='Tanggal Kadaluarsa Paspor'
             onChange={(newValue) => setPassportExpiryDate(newValue)}
+            value={passportExpiryDate}
             disablePast={true}
             slotProps={{
               textField: {
                 id: 'passportExpiryDate',
                 name: 'passportExpiryDate',
                 variant: 'outlined',
-                fullWidth: true,
-                required: true,
-                margin: 'normal',
-                size: 'small',
                 error: !!error.passportExpiryDate,
-                helperText: error.passportExpiryDate
+                helperText: error.passportExpiryDate,
+                required: true,
+                fullWidth: true,
+                margin: 'normal',
+                size: 'small'
               }
             }}
           />
           <TextField
-            id="contactNumber"
-            name="contactNumber"
-            label="Nomor Kontak (WhatsApp)"
-            type="tel"
-            value={inputData.contactNumber}
+            id='contactNumber'
+            name='contactNumber'
+            label='Nomor Kontak (WhatsApp)'
+            type='tel'
             onChange={handleChange}
+            value={inputData.contactNumber}
             error={!!error.contactNumber}
             helperText={error.contactNumber}
             fullWidth
             required
-            margin="normal"
-            size="small"
+            margin='normal'
+            size='small'
           />
           <TextField
-            id="additionalNotes"
-            name="additionalNotes"
-            label="Catatan Tambahan"
-            type="text"
-            value={inputData.additionalNotes}
+            id='additionalNotes'
+            name='additionalNotes'
+            label='Catatan Tambahan'
+            type='text'
             onChange={handleChange}
+            value={inputData.additionalNotes}
             fullWidth
             multiline
             rows={4}
-            margin="normal"
-            size="small"
+            margin='normal'
+            size='small'
           />
           <Button
-            variant="contained"
-            color="primary"
+            variant='contained'
+            color='primary'
+            type='submit'
+            disabled={isSubmitting}
             fullWidth
             sx={{ mt: 2 }}
-            type="submit"
-            disabled={isSubmitting}
           >
-            {isSubmitting ? "Mengirim..." : "Kirim Reservasi"}
+            {isSubmitting ? 'Mengirim...' : 'Kirim Reservasi'}
           </Button>
         </Box>
       </Box>

@@ -1,7 +1,7 @@
 import { Typography } from '@mui/material';
 
-// Komponen AuthHeader untuk menampilkan header seperti title dan subtitle halaman autentikasi
-const AuthHeader = ({ textAuthTitle, textAuthSubtitle}) => {
+// komponen untuk menampilkan header seperti title dan subtitle halaman autentikasi
+const AuthHeader = ({ textAuthTitle, textAuthSubtitle }) => {
   return (
     <>
       <Typography

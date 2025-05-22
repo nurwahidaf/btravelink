@@ -1,7 +1,8 @@
-import { IconButton } from "@mui/material";
-import { useNavigate } from "react-router-dom";
+import { useNavigate } from 'react-router-dom';
+import { IconButton } from '@mui/material';
 import ArrowBackIcon from '@mui/icons-material/ArrowBack';
 
+// komponen untuk tombol back
 const BackButton = () => {
   const navigate = useNavigate();
 
@@ -12,7 +13,7 @@ const BackButton = () => {
     >
       <ArrowBackIcon />
     </IconButton>
-  )
-}
+  );
+};
 
 export default BackButton;

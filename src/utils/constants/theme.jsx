@@ -1,4 +1,4 @@
-import { createTheme } from "@mui/material";
+import { createTheme } from '@mui/material';
 
 const theme = createTheme({
   typography: {
@@ -6,23 +6,22 @@ const theme = createTheme({
   },
   palette: {
     primary: {
-      main: "#4C9AFF",
+      main: '#4C9AFF',
     },
     secondary: {
-      main: "#F53939",
-      green: '#25D366',
+      main: '#F53939',
     },
     background: {
-      default: "#F9F9F9",
+      default: '#F9F9F9',
     },
     text: {
-      dark: "#333333",
-      light: "#F7F7F8",
+      dark: '#333333',
+      light: '#F7F7F8',
     },
     accent: {
       main: '#F4D35E',
       highlight: '#FF7518',
-      dark: "#333333",
+      dark: '#333333',
     }
   },
 });

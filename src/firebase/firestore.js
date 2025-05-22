@@ -1,8 +1,12 @@
-import { collection, doc, runTransaction, serverTimestamp, setDoc } from "firebase/firestore";
-import { db } from "./db";
+import { collection, doc, runTransaction, serverTimestamp, setDoc } from 'firebase/firestore';
+import { db } from './db';
 
+// fungsi untuk menyimpan data pengguna ke firestore
 const saveUser = async (user) => {
-  const userRef = doc(db, "users", user.uid);
+  // referensi ke dokumen pengguna berdasarkan uid
+  const userRef = doc(db, 'users', user.uid);
+
+  // data pengguna yang akan disimpan
   const userData = {
     uid: user.uid,
     displayName: user.displayName,
@@ -12,22 +16,23 @@ const saveUser = async (user) => {
   };
 
   try {
-    await setDoc(userRef, userData);
-    console.log('photoURL', user.photoURL);
+    await setDoc(userRef, userData); // menyimpan dokumen ke koleksi 'users' dengan uid sebagai id dokumen
   } catch (error) {
-    console.error("Error saving user to Firestore:", error);
+    console.error('Error saving user to Firestore:', error);
   }
 };
 
 // fungsi untuk menyimpan data reservasi ke firestore
 const saveReservation = async (reservationData) => {
+  // referensi ke dokumen paket perjalanan berdasarkan packageId
   const packageRef = doc(db, 'tour-packages', reservationData.packageId);
+  
+  // referensi ke dokumen reservasi baru (id otomatis dari firestore)
   const reservationRef = doc(collection(db, 'reservations'));
 
   try {
     await runTransaction(db, async (transaction) => {
-      console.log('mulai transaksi');
-      const packageDoc = await transaction.get(packageRef); // mendapatkan dokumen paket perjalanan berdasarkan ID
+      const packageDoc = await transaction.get(packageRef); // mendapatkan dokumen paket
       
       // cek apakah dokumen paket perjalanan ada
       if (!packageDoc.exists()) {
@@ -36,7 +41,7 @@ const saveReservation = async (reservationData) => {
       
       const data = packageDoc.data(); // mendapatkan data dari dokumen paket perjalanan
       const seats = data.availableSeats; // mendapatkan jumlah kursi yang tersedia
-      console.log('seats', seats);
+      
       // cek apakah kursi tersedia
       if (seats <= 0) {
         throw new Error('No available seats for this package');
@@ -44,27 +49,27 @@ const saveReservation = async (reservationData) => {
       
       // mengurangi jumlah kursi yang tersedia
       transaction.update(packageRef, { availableSeats: seats - 1 });
-      console.log('kurang kursi', seats - 1);
+      
       // menyimpan data reservasi ke dalam koleksi 'reservations'
       transaction.set(reservationRef, {
         ...reservationData,
-        status: 'Dikonfirmasi',
-        createdAt: serverTimestamp(),
+        status: 'Dikonfirmasi', // status awal reservasi
+        createdAt: serverTimestamp(), // waktu pembuatan reservasi
       });
-      console.log('menambahkan data reservasi');
     });
   } catch (error) {
     console.error('Error saving reservation: ', error);
   }
 };
 
-// fungsi pembatalkan reservasi
+// fungsi pembatalan reservasi
 const cancelReservation = async (reservationId) => {
-  const reservationRef = doc(db, "reservations", reservationId);
+  // referensi ke dokumen reservasi berdasarkan reservationId
+  const reservationRef = doc(db, 'reservations', reservationId);
   
   try {
     await runTransaction(db, async (transaction) => {
-      const reservationDoc = await transaction.get(reservationRef); // mendapatkan dokumen reservasi berdasarkan ID
+      const reservationDoc = await transaction.get(reservationRef);  // mendapatkan dokumen reservasi
       
       // cek apakah dokumen reservasi ada
       if (!reservationDoc.exists()) {
@@ -78,21 +83,17 @@ const cancelReservation = async (reservationId) => {
         throw new Error('Reservation is already canceled');
       }
 
-      const packageRef = doc(db, 'tour-packages', reservationData.packageId); // mendapatkan referensi paket perjalanan berdasarkan ID
-      const packageDoc = await transaction.get(packageRef); // mendapatkan dokumen paket perjalanan berdasarkan ID
-
+      const packageRef = doc(db, 'tour-packages', reservationData.packageId); // mendapatkan referensi paket perjalanan berdasarkan id
+      const packageDoc = await transaction.get(packageRef); // mendapatkan dokumen paket perjalanan berdasarkan id
+      
+      // cek apakah dokumen paket perjalanan ada
       if (!packageDoc.exists()) {
         throw new Error('Tour package does not exist');
       }
 
       const seats = packageDoc.data().availableSeats; // mendapatkan jumlah kursi yang tersedia
-
-      // mengembalikan jumlah kursi yang tersedia
-      transaction.update(packageRef, { availableSeats: seats + 1 });
-      console.log('tambah kursi', seats + 1);
-      // memperbarui status reservasi menjadi 'Dibatalkan'
-      transaction.update(reservationRef, { status: 'Dibatalkan' });
-      console.log('pembatalan reservasi berhasil');
+      transaction.update(packageRef, { availableSeats: seats + 1 }); // mengembalikan jumlah kursi yang tersedia
+      transaction.update(reservationRef, { status: 'Dibatalkan' }); // memperbarui status reservasi menjadi 'Dibatalkan'
     });
   } catch (error) {
     console.error('Error canceling reservation: ', error);

@@ -1,11 +1,12 @@
-import { createContext, useEffect, useState } from "react";
-import { onAuthStateChanged } from "firebase/auth";
-import { auth } from "../firebase/auth";
+import { createContext, useEffect, useState } from 'react';
+import { onAuthStateChanged } from 'firebase/auth';
+import { auth } from '../firebase/auth';
 
-// Kelola state autentikasi dengan Context API dan Firebase Authentication
+// context untuk kelola autentikasi pengguna
 const AuthContext = createContext();
 
 const AuthProvider = ({ children }) => {
+  // state untuk menyimpan data pengguna dan status loading
   const [user, setUser] = useState(null);
   const [loading, setLoading] = useState(true);
 
@@ -13,24 +14,26 @@ const AuthProvider = ({ children }) => {
   // dan memperbarui state user & loading
   useEffect(() => {
     const unsubscribe = onAuthStateChanged(auth, (appUser) => {
-      setUser(appUser);
-      setLoading(false);
+      setUser(appUser); // set user ke state
+      setLoading(false); // set loading ke false setelah mendapatkan status autentikasi
     });
 
+    // unsubscribe dari listener saat komponen unmount supaya tidak ada memory leak
     return () => unsubscribe();
   }, []);
 
-  // Fungsi untuk login dan logout user
+  // fungsi untuk login user
   const login = (userData) => setUser(userData);
 
+  // fungsi untuk logout user
   const logout = () => {
     auth.signOut();
-    setUser(null);
+    setUser(null); // set user ke null saat logout
   };
   
   return (
     <AuthContext.Provider value={{ user, login, logout }}>
-      {!loading && children} {/* Render children setelah loading selesai */}
+      {!loading && children} {/* render children setelah loading selesai */}
     </AuthContext.Provider>
   );
 };

@@ -1,5 +1,5 @@
-import { app } from "./config";
-import { getFirestore } from "firebase/firestore";
+import { getFirestore } from 'firebase/firestore';
+import { app } from './config';
 
 // Initialize Cloud Firestore
 const db = getFirestore(app);

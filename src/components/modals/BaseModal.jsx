@@ -1,4 +1,4 @@
-import { Backdrop, Box, Fade, Modal } from "@mui/material";
+import { Backdrop, Box, Fade, Modal } from '@mui/material';
 
 const modalStyle = {
   position: 'absolute',
@@ -16,7 +16,8 @@ const modalStyle = {
   alignItems: 'center',
 }
 
-const BaseModal = ({  open, onCloseModal, children }) => {
+// komponen untuk styling default modal
+const BaseModal = ({ open, onCloseModal, children }) => {
   return (
     <Modal
       open={open}
@@ -35,7 +36,7 @@ const BaseModal = ({  open, onCloseModal, children }) => {
         </Box>
       </Fade>
     </Modal>
-  )
+  );
 };
 
 export default BaseModal;
